@@ -26,11 +26,11 @@ CREATE TABLE `account`
 );
 
 INSERT INTO user (id, name, email)
-VALUES ('1', 'Andrea', 'andrea@gmail.com');
+VALUES (1, 'Andrea', 'andrea@gmail.com');
 INSERT INTO user (id, name, email)
-VALUES ('2', 'Balint', 'balint@gmail.com');
+VALUES (2, 'Balint', 'balint@gmail.com');
 INSERT INTO user (id, name, email)
-VALUES ('3', 'Cecil', 'cecil@gmail.com');
+VALUES (3, 'Cecil', 'cecil@gmail.com');
 
 INSERT INTO account
     (number, balance, user_id)

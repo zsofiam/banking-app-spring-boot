@@ -2,15 +2,18 @@ package com.example.banking_app.controller;
 
 
 import com.example.banking_app.dto.BankAccountDTO;
+import com.example.banking_app.exception.ApiRequestException;
 import com.example.banking_app.model.BankAccount;
 import com.example.banking_app.model.Deposit;
 import com.example.banking_app.model.Transfer;
 import com.example.banking_app.model.Withdraw;
 import com.example.banking_app.service.AccountService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -24,18 +27,25 @@ public class AccountController {
     }
 
     @GetMapping("")
-    public List<BankAccountDTO> getAccounts() {
-        return accountService.getAccounts();
+    public ResponseEntity<List<BankAccountDTO>> getAccounts() {
+//        throw new ApiRequestException("Something went wrong with getting accounts.");
+//        return accountService.getAccounts();
+        return new ResponseEntity<>(accountService.getAccounts(), HttpStatus.OK);
+    }
+    @GetMapping("/{account_id}")
+    public ResponseEntity<BankAccountDTO> getBankAccount(@PathVariable("account_id") Long account_id) {
+        return new ResponseEntity<>(accountService.getBankAccount(account_id), HttpStatus.OK);
     }
 
     @PostMapping("")
-    public void addAccount(@RequestBody BankAccount account) {
+    public ResponseEntity<?> addAccount(@RequestBody BankAccount account) {
         accountService.addAccount(account);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @GetMapping("/{account_id}/balance")
-    public BigDecimal getBalance(@PathVariable("account_id") Long account_id) {
-        return accountService.getBalance(account_id);
+    public ResponseEntity<BigDecimal> getBalance(@PathVariable("account_id") Long account_id) {
+        return new ResponseEntity<>( accountService.getBalance(account_id), HttpStatus.OK);
     }
 
     @PostMapping("/{account_id}/deposit")
