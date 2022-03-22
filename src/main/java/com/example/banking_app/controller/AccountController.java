@@ -4,6 +4,8 @@ package com.example.banking_app.controller;
 import com.example.banking_app.dto.BankAccountDTO;
 import com.example.banking_app.model.BankAccount;
 import com.example.banking_app.model.Deposit;
+import com.example.banking_app.model.Transfer;
+import com.example.banking_app.model.Withdraw;
 import com.example.banking_app.service.AccountService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,18 +43,14 @@ public class AccountController {
         accountService.depositMoney(account_id, deposit);
     }
 
-   /* @GetMapping("/{user_id}")
-    public User getUtilityAccount(@PathVariable("user_id") Long user_id) {
-        return userService.getUserById(user_id);
+    @PostMapping("/{account_id}/withdraw")
+    public void withdrawMoney(@PathVariable("account_id") Long account_id, @RequestBody Withdraw withdraw) {
+        accountService.withdrawMoney(account_id, withdraw);
     }
 
-    @PostMapping("")
-    public void addAccount(@RequestBody Account account) {
-        accountService.addAccount(account);
+    @PostMapping("/{account_id}/transfer")
+    public void transferMoney(@PathVariable("account_id") Long account_id, @RequestBody Transfer transfer) {
+        accountService.transferMoney(account_id, transfer);
     }
 
-    @DeleteMapping("/{user_id}")
-    public void deleteUser(@PathVariable("user_id") Long user_id) {
-        userService.deleteUser(user_id);
-    }*/
 }

@@ -3,6 +3,8 @@ package com.example.banking_app.service;
 import com.example.banking_app.dto.BankAccountDTO;
 import com.example.banking_app.model.BankAccount;
 import com.example.banking_app.model.Deposit;
+import com.example.banking_app.model.Transfer;
+import com.example.banking_app.model.Withdraw;
 import com.example.banking_app.repository.BankAccountRepository;
 import org.springframework.stereotype.Service;
 
@@ -61,5 +63,34 @@ public class AccountService {
         BigDecimal newBalance = currentBalance.add(deposit.getAmount());
 
 
+    }
+
+    public void withdrawMoney(Long account_id, Withdraw withdraw) {
+        Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
+        BankAccount bankAccountFound = bankAccount.orElseThrow(() -> new RuntimeException("bankaccount not found!"));
+        if ((bankAccountFound.getBalance().subtract(withdraw.getAmount())).compareTo(BigDecimal.ZERO) >= 0) {
+            bankAccountFound.setBalance(bankAccountFound.getBalance().subtract(withdraw.getAmount()));
+            bankAccountRepository.save(bankAccountFound);
+        }
+        else{
+            throw new RuntimeException("Not enough money on your account!");
+        }
+
+    }
+
+    public void transferMoney(Long account_id, Transfer transfer) {
+        Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
+        Optional<BankAccount> destinationBankAccount = bankAccountRepository.findByNumber(transfer.getDestinationAccountNumber());
+        BankAccount bankAccountFound = bankAccount.orElseThrow(() -> new RuntimeException("bankaccount not found!"));
+        BankAccount bankAccountDestination = destinationBankAccount.orElseThrow(() -> new RuntimeException("bankaccount not found!"));
+        if ((bankAccountFound.getBalance().subtract(transfer.getAmount())).compareTo(BigDecimal.ZERO) >= 0) {
+            bankAccountFound.setBalance(bankAccountFound.getBalance().subtract(transfer.getAmount()));
+            bankAccountDestination.setBalance(bankAccountDestination.getBalance().add(transfer.getAmount()));
+            bankAccountRepository.save(bankAccountFound);
+            bankAccountRepository.save(bankAccountDestination);
+        }
+        else{
+            throw new RuntimeException("Not enough money on your account!");
+        }
     }
 }
