@@ -1,6 +1,7 @@
 package com.example.banking_app.service;
 
 import com.example.banking_app.dto.BankAccountDTO;
+import com.example.banking_app.exception.AccountNotFoundException;
 import com.example.banking_app.model.BankAccount;
 import com.example.banking_app.model.Deposit;
 import com.example.banking_app.model.Transfer;
@@ -53,7 +54,7 @@ public class AccountService {
 
     public void depositMoney(Long account_id, Deposit deposit) {
         Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
-        BankAccount bankAccount2 = bankAccount.orElseThrow(() -> new RuntimeException("bankaccount not found!"));
+        BankAccount bankAccount2 = bankAccount.orElseThrow(() -> new RuntimeException("bankaccount not found " + account_id));
         //saját bankaccountnotfoundexception
           //exception handler a controllerben
             bankAccount2.setBalance(bankAccount2.getBalance().add(deposit.getAmount()));
@@ -67,7 +68,7 @@ public class AccountService {
 
     public void withdrawMoney(Long account_id, Withdraw withdraw) {
         Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
-        BankAccount bankAccountFound = bankAccount.orElseThrow(() -> new RuntimeException("bankaccount not found!"));
+        BankAccount bankAccountFound = bankAccount.orElseThrow(() -> new RuntimeException("bankaccount not found " + account_id));
         if ((bankAccountFound.getBalance().subtract(withdraw.getAmount())).compareTo(BigDecimal.ZERO) >= 0) {
             bankAccountFound.setBalance(bankAccountFound.getBalance().subtract(withdraw.getAmount()));
             bankAccountRepository.save(bankAccountFound);
@@ -81,8 +82,8 @@ public class AccountService {
     public void transferMoney(Long account_id, Transfer transfer) {
         Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
         Optional<BankAccount> destinationBankAccount = bankAccountRepository.findByNumber(transfer.getDestinationAccountNumber());
-        BankAccount bankAccountFound = bankAccount.orElseThrow(() -> new RuntimeException("bankaccount not found!"));
-        BankAccount bankAccountDestination = destinationBankAccount.orElseThrow(() -> new RuntimeException("bankaccount not found!"));
+        BankAccount bankAccountFound = bankAccount.orElseThrow(() -> new AccountNotFoundException("bank account not found " + account_id));
+        BankAccount bankAccountDestination = destinationBankAccount.orElseThrow(() -> new RuntimeException("bank account not found " + account_id));
         if ((bankAccountFound.getBalance().subtract(transfer.getAmount())).compareTo(BigDecimal.ZERO) >= 0) {
             bankAccountFound.setBalance(bankAccountFound.getBalance().subtract(transfer.getAmount()));
             bankAccountDestination.setBalance(bankAccountDestination.getBalance().add(transfer.getAmount()));
@@ -92,5 +93,11 @@ public class AccountService {
         else{
             throw new RuntimeException("Not enough money on your account!");
         }
+    }
+
+    public BankAccountDTO getBankAccount(Long account_id) {
+        Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
+        BankAccount bankAccountFound = bankAccount.orElseThrow(() -> new AccountNotFoundException("bank account not found " + account_id));
+        return convertEntityToDTO(bankAccountFound);
     }
 }
