@@ -54,7 +54,7 @@ public class AccountService {
         BankAccount bankAccount2 = bankAccount.orElseThrow(() -> new RuntimeException("bankaccount not found!"));
         //saját bankaccountnotfoundexception
           //exception handler a controllerben
-            bankAccount2.setBalance(BigDecimal.valueOf(10));
+            bankAccount2.setBalance(bankAccount2.getBalance().add(deposit.getAmount()));
             bankAccountRepository.save(bankAccount2);
 
         BigDecimal currentBalance = bankAccount.map(BankAccount::getBalance).orElse(null);

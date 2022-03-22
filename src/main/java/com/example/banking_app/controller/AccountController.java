@@ -38,9 +38,7 @@ public class AccountController {
 
     @PostMapping("/{account_id}/deposit")
     public void depositMoney(@PathVariable("account_id") Long account_id, @RequestBody Deposit deposit) {
-        System.out.println(account_id);
-        System.out.println(deposit);
-//        accountService.depositMoney(account_id, deposit);
+        accountService.depositMoney(account_id, deposit);
     }
 
    /* @GetMapping("/{user_id}")
