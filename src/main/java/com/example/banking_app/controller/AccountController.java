@@ -1,6 +1,7 @@
 package com.example.banking_app.controller;
 
 
+import com.example.banking_app.dto.BankAccountDTO;
 import com.example.banking_app.model.BankAccount;
 import com.example.banking_app.model.Deposit;
 import com.example.banking_app.service.AccountService;
@@ -21,7 +22,7 @@ public class AccountController {
     }
 
     @GetMapping("")
-    public List<BankAccount> getAccounts() {
+    public List<BankAccountDTO> getAccounts() {
         return accountService.getAccounts();
     }
 

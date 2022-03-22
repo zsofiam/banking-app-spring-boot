@@ -1,5 +1,6 @@
 package com.example.banking_app.service;
 
+import com.example.banking_app.dto.BankAccountDTO;
 import com.example.banking_app.model.BankAccount;
 import com.example.banking_app.model.Deposit;
 import com.example.banking_app.repository.BankAccountRepository;
@@ -9,6 +10,7 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -20,8 +22,22 @@ public class AccountService {
         this.bankAccountRepository = bankAccountRepository;
     }
 
-    public List<BankAccount> getAccounts() {
-        return bankAccountRepository.findAll();
+    public List<BankAccountDTO> getAccounts() {
+        return bankAccountRepository.findAll()
+                .stream()
+                .map(this::convertEntityToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private BankAccountDTO convertEntityToDTO(BankAccount bankAccount) {
+        BankAccountDTO bankAccountDTO = new BankAccountDTO();
+
+        bankAccountDTO.setId(bankAccount.getId());
+        bankAccountDTO.setNumber(bankAccount.getNumber());
+        bankAccountDTO.setBalance(bankAccount.getBalance());
+        bankAccountDTO.setUserId(bankAccount.getUser().getId());
+
+        return bankAccountDTO;
     }
 
     public void addAccount(BankAccount account) {
