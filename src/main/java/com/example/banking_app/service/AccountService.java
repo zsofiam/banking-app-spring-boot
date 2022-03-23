@@ -61,7 +61,7 @@ public class AccountService {
 
     public BigDecimal getBalance(Long account_id) {
         Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
-        return bankAccount.map(BankAccount::getBalance).orElse(null);
+        return bankAccount.map(BankAccount::getBalance).orElseThrow(()->new AccountNotFoundException(account_id));
     }
 
     public void depositMoney(Long account_id, Deposit deposit) {
