@@ -8,7 +8,6 @@ import com.example.banking_app.model.*;
 import com.example.banking_app.repository.BankAccountRepository;
 import com.example.banking_app.repository.UserRepository;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;

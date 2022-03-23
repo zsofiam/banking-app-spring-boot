@@ -10,7 +10,6 @@ import com.example.banking_app.service.AccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
@@ -20,6 +19,7 @@ import java.util.List;
 public class AccountController {
 
     private final AccountService accountService;
+
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
     }
@@ -43,7 +43,7 @@ public class AccountController {
 
     @GetMapping("/{account_id}/balance")
     public ResponseEntity<BigDecimal> getBalance(@PathVariable("account_id") Long account_id) {
-        return new ResponseEntity<>( accountService.getBalance(account_id), HttpStatus.OK);
+        return new ResponseEntity<>(accountService.getBalance(account_id), HttpStatus.OK);
     }
 
     @PutMapping("/{account_id}/deposit")
