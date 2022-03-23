@@ -54,7 +54,7 @@ public class AccountService {
         bankAccount.setBalance(accountDTO.getBalance());
         Long userId = accountDTO.getUserId();
         Optional<User> user = userRepository.findById(userId);
-        User userFound = user.orElseThrow(() -> new UserNotFoundException("User not found: " + userId));
+        User userFound = user.orElseThrow(() -> new UserNotFoundException(userId));
         bankAccount.setUser(userFound);
         return bankAccount;
     }
@@ -72,7 +72,7 @@ public class AccountService {
 
     private BankAccount getBankAccountById(Long account_id) {
         Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
-        BankAccount bankAccountFound = bankAccount.orElseThrow(() -> new AccountNotFoundException("bank account not found " + account_id));
+        BankAccount bankAccountFound = bankAccount.orElseThrow(() -> new AccountNotFoundException(account_id));
         return bankAccountFound;
     }
 
@@ -83,7 +83,7 @@ public class AccountService {
             bankAccountRepository.save(bankAccountFound);
         }
         else{
-            throw new LowBalanceException("Not enough money on your account!");
+            throw new LowBalanceException();
         }
 
     }
@@ -91,7 +91,7 @@ public class AccountService {
     public void transferMoney(Long account_id, Transfer transfer) {
         BankAccount bankAccountFound = getBankAccountById(account_id);
         Optional<BankAccount> destinationBankAccount = bankAccountRepository.findByNumber(transfer.getDestinationAccountNumber());
-        BankAccount destinationBankAccountFound = destinationBankAccount.orElseThrow(() -> new AccountNotFoundException("bank account not found " + account_id));
+        BankAccount destinationBankAccountFound = destinationBankAccount.orElseThrow(() -> new AccountNotFoundException(account_id));
         if ((bankAccountFound.getBalance().subtract(transfer.getAmount())).compareTo(BigDecimal.ZERO) >= 0) {
             bankAccountFound.setBalance(bankAccountFound.getBalance().subtract(transfer.getAmount()));
             destinationBankAccountFound.setBalance(destinationBankAccountFound.getBalance().add(transfer.getAmount()));
@@ -99,7 +99,7 @@ public class AccountService {
             bankAccountRepository.save(destinationBankAccountFound);
         }
         else{
-            throw new LowBalanceException("Not enough money on your account!");
+            throw new LowBalanceException();
         }
     }
 
