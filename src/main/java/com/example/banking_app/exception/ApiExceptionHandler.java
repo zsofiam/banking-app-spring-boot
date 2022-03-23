@@ -18,6 +18,11 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(value = {LowBalanceException.class})
+    public ResponseEntity<String> handleLowBalanceException(LowBalanceException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGlobalException(Exception exception,
                                                             WebRequest request) {
