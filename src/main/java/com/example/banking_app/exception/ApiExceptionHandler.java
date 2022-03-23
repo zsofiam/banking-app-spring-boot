@@ -22,6 +22,11 @@ public class ApiExceptionHandler {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(value = {UserNotFoundException.class})
+    public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleGlobalException(Exception exception,
                                                             WebRequest request) {

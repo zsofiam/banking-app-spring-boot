@@ -1,14 +1,12 @@
 package com.example.banking_app.model;
 
 import lombok.*;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @Entity
 @Table(name = "account")
 public class BankAccount {
