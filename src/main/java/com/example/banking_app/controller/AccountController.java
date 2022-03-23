@@ -2,7 +2,6 @@ package com.example.banking_app.controller;
 
 
 import com.example.banking_app.dto.BankAccountDTO;
-import com.example.banking_app.exception.ApiRequestException;
 import com.example.banking_app.model.BankAccount;
 import com.example.banking_app.model.Deposit;
 import com.example.banking_app.model.Transfer;
@@ -28,8 +27,6 @@ public class AccountController {
 
     @GetMapping("")
     public ResponseEntity<List<BankAccountDTO>> getAccounts() {
-//        throw new ApiRequestException("Something went wrong with getting accounts.");
-//        return accountService.getAccounts();
         return new ResponseEntity<>(accountService.getAccounts(), HttpStatus.OK);
     }
     @GetMapping("/{account_id}")
@@ -38,9 +35,10 @@ public class AccountController {
     }
 
     @PostMapping("")
-    public ResponseEntity<?> addAccount(@RequestBody BankAccount account) {
-        accountService.addAccount(account);
-        return new ResponseEntity(HttpStatus.CREATED);
+    public ResponseEntity<Object> addAccount(@RequestBody BankAccountDTO accountDTO) {
+        BankAccount bankAccount = accountService.addAccount(accountDTO);
+        Long id = bankAccount.getId();
+        return ResponseEntity.created(URI.create("/api/v1/account/" + id)).build();
     }
 
     @GetMapping("/{account_id}/balance")
@@ -48,19 +46,22 @@ public class AccountController {
         return new ResponseEntity<>( accountService.getBalance(account_id), HttpStatus.OK);
     }
 
-    @PostMapping("/{account_id}/deposit")
-    public void depositMoney(@PathVariable("account_id") Long account_id, @RequestBody Deposit deposit) {
+    @PutMapping("/{account_id}/deposit")
+    public ResponseEntity<Object> depositMoney(@PathVariable("account_id") Long account_id, @RequestBody Deposit deposit) {
         accountService.depositMoney(account_id, deposit);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/{account_id}/withdraw")
-    public void withdrawMoney(@PathVariable("account_id") Long account_id, @RequestBody Withdraw withdraw) {
+    @PutMapping("/{account_id}/withdraw")
+    public ResponseEntity<Object> withdrawMoney(@PathVariable("account_id") Long account_id, @RequestBody Withdraw withdraw) {
         accountService.withdrawMoney(account_id, withdraw);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    @PostMapping("/{account_id}/transfer")
-    public void transferMoney(@PathVariable("account_id") Long account_id, @RequestBody Transfer transfer) {
+    @PutMapping("/{account_id}/transfer")
+    public ResponseEntity<Object> transferMoney(@PathVariable("account_id") Long account_id, @RequestBody Transfer transfer) {
         accountService.transferMoney(account_id, transfer);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
 }

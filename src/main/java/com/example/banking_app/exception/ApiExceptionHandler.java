@@ -14,8 +14,12 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(value = {AccountNotFoundException.class})
     public ResponseEntity<String> handleAccountNotFoundException(AccountNotFoundException exception) {
-
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = {LowBalanceException.class})
+    public ResponseEntity<String> handleLowBalanceException(LowBalanceException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
