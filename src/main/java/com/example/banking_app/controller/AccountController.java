@@ -31,7 +31,7 @@ public class AccountController {
 
     @GetMapping("/{account_id}")
     public ResponseEntity<BankAccountDTO> getBankAccount(@PathVariable("account_id") Long account_id) {
-        return new ResponseEntity<>(accountService.getBankAccount(account_id), HttpStatus.OK);
+        return new ResponseEntity<>(accountService.getBankAccountDTO(account_id), HttpStatus.OK);
     }
 
     @PostMapping("")

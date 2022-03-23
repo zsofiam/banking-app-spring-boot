@@ -2,8 +2,8 @@ package com.example.banking_app.service;
 
 import com.example.banking_app.dto.BankAccountDTO;
 import com.example.banking_app.exception.AccountNotFoundException;
-import com.example.banking_app.exception.ApiException;
 import com.example.banking_app.exception.LowBalanceException;
+import com.example.banking_app.exception.UserNotFoundException;
 import com.example.banking_app.model.*;
 import com.example.banking_app.repository.BankAccountRepository;
 import com.example.banking_app.repository.UserRepository;
@@ -54,7 +54,7 @@ public class AccountService {
         bankAccount.setBalance(accountDTO.getBalance());
         Long userId = accountDTO.getUserId();
         Optional<User> user = userRepository.findById(userId);
-        User userFound = user.orElseThrow(() -> new ApiException("User not found: " + userId));
+        User userFound = user.orElseThrow(() -> new UserNotFoundException("User not found: " + userId));
         bankAccount.setUser(userFound);
         return bankAccount;
     }
@@ -65,15 +65,19 @@ public class AccountService {
     }
 
     public void depositMoney(Long account_id, Deposit deposit) {
-        Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
-        BankAccount bankAccountFound = bankAccount.orElseThrow(() -> new AccountNotFoundException("bankaccount not found " + account_id));
+        BankAccount bankAccountFound = getBankAccountById(account_id);
         bankAccountFound.setBalance(bankAccountFound.getBalance().add(deposit.getAmount()));
         bankAccountRepository.save(bankAccountFound);
     }
 
-    public void withdrawMoney(Long account_id, Withdraw withdraw) {
+    private BankAccount getBankAccountById(Long account_id) {
         Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
-        BankAccount bankAccountFound = bankAccount.orElseThrow(() -> new AccountNotFoundException("bankaccount not found " + account_id));
+        BankAccount bankAccountFound = bankAccount.orElseThrow(() -> new AccountNotFoundException("bank account not found " + account_id));
+        return bankAccountFound;
+    }
+
+    public void withdrawMoney(Long account_id, Withdraw withdraw) {
+        BankAccount bankAccountFound = getBankAccountById(account_id);
         if ((bankAccountFound.getBalance().subtract(withdraw.getAmount())).compareTo(BigDecimal.ZERO) >= 0) {
             bankAccountFound.setBalance(bankAccountFound.getBalance().subtract(withdraw.getAmount()));
             bankAccountRepository.save(bankAccountFound);
@@ -85,9 +89,8 @@ public class AccountService {
     }
 
     public void transferMoney(Long account_id, Transfer transfer) {
-        Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
+        BankAccount bankAccountFound = getBankAccountById(account_id);
         Optional<BankAccount> destinationBankAccount = bankAccountRepository.findByNumber(transfer.getDestinationAccountNumber());
-        BankAccount bankAccountFound = bankAccount.orElseThrow(() -> new AccountNotFoundException("bank account not found " + account_id));
         BankAccount destinationBankAccountFound = destinationBankAccount.orElseThrow(() -> new AccountNotFoundException("bank account not found " + account_id));
         if ((bankAccountFound.getBalance().subtract(transfer.getAmount())).compareTo(BigDecimal.ZERO) >= 0) {
             bankAccountFound.setBalance(bankAccountFound.getBalance().subtract(transfer.getAmount()));
@@ -100,9 +103,8 @@ public class AccountService {
         }
     }
 
-    public BankAccountDTO getBankAccount(Long account_id) {
-        Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
-        BankAccount bankAccountFound = bankAccount.orElseThrow(() -> new AccountNotFoundException("bank account not found " + account_id));
+    public BankAccountDTO getBankAccountDTO(Long account_id) {
+        BankAccount bankAccountFound = getBankAccountById(account_id);
         return convertEntityToDTO(bankAccountFound);
     }
 }

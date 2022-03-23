@@ -1,11 +1,9 @@
 package com.example.banking_app.model;
 
 import lombok.*;
-
 import javax.persistence.*;
 import java.math.BigDecimal;
 
-/*@Builder*/
 @Getter
 @Setter
 @Entity
@@ -24,7 +22,6 @@ public class Transaction {
 
     }
 
-//    @OneToOne(cascade = CascadeType.ALL)
     @ManyToOne
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     private BankAccount account;
