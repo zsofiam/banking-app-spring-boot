@@ -14,7 +14,6 @@ public class ApiExceptionHandler {
 
     @ExceptionHandler(value = {AccountNotFoundException.class})
     public ResponseEntity<String> handleAccountNotFoundException(AccountNotFoundException exception) {
-
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
     }
 

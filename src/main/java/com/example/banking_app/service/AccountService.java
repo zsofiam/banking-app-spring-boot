@@ -43,9 +43,9 @@ public class AccountService {
         return bankAccountDTO;
     }
 
-    public void addAccount(BankAccountDTO accountDTO) {
+    public BankAccount addAccount(BankAccountDTO accountDTO) {
         BankAccount bankAccount = convertDTOToEntity(accountDTO);
-        bankAccountRepository.save(bankAccount);
+        return bankAccountRepository.save(bankAccount);
     }
 
     private BankAccount convertDTOToEntity(BankAccountDTO accountDTO) {
