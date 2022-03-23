@@ -20,7 +20,6 @@ import java.util.List;
 public class AccountController {
 
     private final AccountService accountService;
-
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
     }
@@ -29,6 +28,7 @@ public class AccountController {
     public ResponseEntity<List<BankAccountDTO>> getAccounts() {
         return new ResponseEntity<>(accountService.getAccounts(), HttpStatus.OK);
     }
+
     @GetMapping("/{account_id}")
     public ResponseEntity<BankAccountDTO> getBankAccount(@PathVariable("account_id") Long account_id) {
         return new ResponseEntity<>(accountService.getBankAccount(account_id), HttpStatus.OK);
