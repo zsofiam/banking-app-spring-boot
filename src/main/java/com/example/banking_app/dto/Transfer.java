@@ -1,4 +1,4 @@
-package com.example.banking_app.model;
+package com.example.banking_app.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,10 +6,12 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-public class Withdraw {
+public class Transfer {
 
     private BigDecimal amount;
 
-    public Withdraw() {
+    private String destinationAccountNumber;
+
+    public Transfer() {
     }
 }

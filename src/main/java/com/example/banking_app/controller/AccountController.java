@@ -3,9 +3,9 @@ package com.example.banking_app.controller;
 
 import com.example.banking_app.dto.BankAccountDTO;
 import com.example.banking_app.model.BankAccount;
-import com.example.banking_app.model.Deposit;
-import com.example.banking_app.model.Transfer;
-import com.example.banking_app.model.Withdraw;
+import com.example.banking_app.dto.Deposit;
+import com.example.banking_app.dto.Transfer;
+import com.example.banking_app.dto.Withdraw;
 import com.example.banking_app.service.AccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
