@@ -3,9 +3,9 @@ package com.example.banking_app.controller;
 
 import com.example.banking_app.dto.BankAccountDTO;
 import com.example.banking_app.model.BankAccount;
-import com.example.banking_app.model.Deposit;
-import com.example.banking_app.model.Transfer;
-import com.example.banking_app.model.Withdraw;
+import com.example.banking_app.dto.Deposit;
+import com.example.banking_app.dto.Transfer;
+import com.example.banking_app.dto.Withdraw;
 import com.example.banking_app.service.AccountService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,19 +49,19 @@ public class AccountController {
     @PutMapping("/{account_id}/deposit")
     public ResponseEntity<Object> depositMoney(@PathVariable("account_id") Long account_id, @RequestBody Deposit deposit) {
         accountService.depositMoney(account_id, deposit);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{account_id}/withdraw")
     public ResponseEntity<Object> withdrawMoney(@PathVariable("account_id") Long account_id, @RequestBody Withdraw withdraw) {
         accountService.withdrawMoney(account_id, withdraw);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping("/{account_id}/transfer")
     public ResponseEntity<Object> transferMoney(@PathVariable("account_id") Long account_id, @RequestBody Transfer transfer) {
         accountService.transferMoney(account_id, transfer);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

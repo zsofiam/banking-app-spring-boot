@@ -1,6 +1,9 @@
 package com.example.banking_app.service;
 
 import com.example.banking_app.dto.BankAccountDTO;
+import com.example.banking_app.dto.Deposit;
+import com.example.banking_app.dto.Transfer;
+import com.example.banking_app.dto.Withdraw;
 import com.example.banking_app.exception.AccountNotFoundException;
 import com.example.banking_app.exception.LowBalanceException;
 import com.example.banking_app.exception.UserNotFoundException;
