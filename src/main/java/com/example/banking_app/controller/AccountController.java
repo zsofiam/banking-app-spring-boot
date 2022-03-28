@@ -68,6 +68,13 @@ public class AccountController {
         return new ResponseEntity<>(bankAccountDTO, HttpStatus.OK);
     }
 
+    @DeleteMapping(value = "/{account_id}")
+    public ResponseEntity<HttpStatus> removeAccount (@PathVariable("account_id") Long account_id)
+    {
+        accountService.removeAccount(account_id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
 
 
 }

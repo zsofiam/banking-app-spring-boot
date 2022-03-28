@@ -123,6 +123,14 @@ public class TestAccountController {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.userId").value(1L));
     }
 
+    @Test
+    public void deleteAccountAPI() throws Exception
+    {
+        mvc.perform(
+                        delete("/api/v1/account/{id}", 1) )
+                .andExpect(status().isAccepted());
+    }
+
     private static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);

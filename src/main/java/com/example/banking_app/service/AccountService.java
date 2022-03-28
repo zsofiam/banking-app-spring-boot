@@ -111,4 +111,8 @@ public class AccountService {
         bankAccount.setUser(userFound);
         return bankAccount;
     }
+
+    public void removeAccount(Long account_id) {
+        bankAccountRepository.deleteById(account_id);
+    }
 }
