@@ -51,21 +51,23 @@ public class AccountController {
     }
 
     @PutMapping("/{account_id}/deposit")
-    public ResponseEntity<Object> depositMoney(@PathVariable("account_id") Long account_id, @RequestBody Deposit deposit) {
-        accountService.depositMoney(account_id, deposit);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<BankAccountDTO> depositMoney(@PathVariable("account_id") Long account_id, @RequestBody Deposit deposit) {
+        BankAccountDTO bankAccountDTO = accountService.depositMoney(account_id, deposit);
+        return new ResponseEntity<>(bankAccountDTO, HttpStatus.OK);
     }
 
     @PutMapping("/{account_id}/withdraw")
-    public ResponseEntity<Object> withdrawMoney(@PathVariable("account_id") Long account_id, @RequestBody Withdraw withdraw) {
-        accountService.withdrawMoney(account_id, withdraw);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<BankAccountDTO> withdrawMoney(@PathVariable("account_id") Long account_id, @RequestBody Withdraw withdraw) {
+        BankAccountDTO bankAccountDTO = accountService.withdrawMoney(account_id, withdraw);
+        return new ResponseEntity<>(bankAccountDTO, HttpStatus.OK);
     }
 
     @PutMapping("/{account_id}/transfer")
-    public ResponseEntity<Object> transferMoney(@PathVariable("account_id") Long account_id, @RequestBody Transfer transfer) {
-        accountService.transferMoney(account_id, transfer);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<BankAccountDTO> transferMoney(@PathVariable("account_id") Long account_id, @RequestBody Transfer transfer) {
+        BankAccountDTO bankAccountDTO = accountService.transferMoney(account_id, transfer);
+        return new ResponseEntity<>(bankAccountDTO, HttpStatus.OK);
     }
+
+
 
 }

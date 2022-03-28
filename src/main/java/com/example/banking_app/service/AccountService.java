@@ -36,30 +36,9 @@ public class AccountService {
                 .collect(Collectors.toList());
     }
 
-    private BankAccountDTO convertEntityToDTO(BankAccount bankAccount) {
-        BankAccountDTO bankAccountDTO = new BankAccountDTO();
-        bankAccountDTO.setId(bankAccount.getId());
-        bankAccountDTO.setNumber(bankAccount.getNumber());
-        bankAccountDTO.setBalance(bankAccount.getBalance());
-        bankAccountDTO.setUserId(bankAccount.getUser().getId());
-        return bankAccountDTO;
-    }
-
     public BankAccount addAccount(BankAccountDTO accountDTO) {
         BankAccount bankAccount = convertDTOToEntity(accountDTO);
         return bankAccountRepository.save(bankAccount);
-    }
-
-    private BankAccount convertDTOToEntity(BankAccountDTO accountDTO) {
-        BankAccount bankAccount = new BankAccount();
-        bankAccount.setId(accountDTO.getId());
-        bankAccount.setNumber(accountDTO.getNumber());
-        bankAccount.setBalance(accountDTO.getBalance());
-        Long userId = accountDTO.getUserId();
-        Optional<User> user = userRepository.findById(userId);
-        User userFound = user.orElseThrow(() -> new UserNotFoundException(userId));
-        bankAccount.setUser(userFound);
-        return bankAccount;
     }
 
     public BigDecimal getBalance(Long account_id) {
@@ -67,19 +46,18 @@ public class AccountService {
         return bankAccount.map(BankAccount::getBalance).orElseThrow(()->new AccountNotFoundException(account_id));
     }
 
-    public void depositMoney(Long account_id, Deposit deposit) {
+    public BankAccountDTO depositMoney(Long account_id, Deposit deposit) {
         BankAccount bankAccountFound = getBankAccountById(account_id);
         bankAccountFound.setBalance(bankAccountFound.getBalance().add(deposit.getAmount()));
-        bankAccountRepository.save(bankAccountFound);
+        return convertEntityToDTO(bankAccountRepository.save(bankAccountFound));
     }
 
     private BankAccount getBankAccountById(Long account_id) {
         Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
-        BankAccount bankAccountFound = bankAccount.orElseThrow(() -> new AccountNotFoundException(account_id));
-        return bankAccountFound;
+        return bankAccount.orElseThrow(() -> new AccountNotFoundException(account_id));
     }
 
-    public void withdrawMoney(Long account_id, Withdraw withdraw) {
+    public BankAccountDTO withdrawMoney(Long account_id, Withdraw withdraw) {
         BankAccount bankAccountFound = getBankAccountById(account_id);
         if ((bankAccountFound.getBalance().subtract(withdraw.getAmount())).compareTo(BigDecimal.ZERO) >= 0) {
             bankAccountFound.setBalance(bankAccountFound.getBalance().subtract(withdraw.getAmount()));
@@ -89,9 +67,10 @@ public class AccountService {
             throw new LowBalanceException();
         }
 
+        return convertEntityToDTO(bankAccountFound);
     }
 
-    public void transferMoney(Long account_id, Transfer transfer) {
+    public BankAccountDTO transferMoney(Long account_id, Transfer transfer) {
         BankAccount bankAccountFound = getBankAccountById(account_id);
         Optional<BankAccount> destinationBankAccount = bankAccountRepository.findByNumber(transfer.getDestinationAccountNumber());
         BankAccount destinationBankAccountFound = destinationBankAccount.orElseThrow(() -> new AccountNotFoundException(account_id));
@@ -104,10 +83,32 @@ public class AccountService {
         else{
             throw new LowBalanceException();
         }
+        return convertEntityToDTO(bankAccountFound);
     }
 
     public BankAccountDTO getBankAccountDTO(Long account_id) {
         BankAccount bankAccountFound = getBankAccountById(account_id);
         return convertEntityToDTO(bankAccountFound);
+    }
+
+    private BankAccountDTO convertEntityToDTO(BankAccount bankAccount) {
+        BankAccountDTO bankAccountDTO = new BankAccountDTO();
+        bankAccountDTO.setId(bankAccount.getId());
+        bankAccountDTO.setNumber(bankAccount.getNumber());
+        bankAccountDTO.setBalance(bankAccount.getBalance());
+        bankAccountDTO.setUserId(bankAccount.getUser().getId());
+        return bankAccountDTO;
+    }
+
+    private BankAccount convertDTOToEntity(BankAccountDTO accountDTO) {
+        BankAccount bankAccount = new BankAccount();
+        bankAccount.setId(accountDTO.getId());
+        bankAccount.setNumber(accountDTO.getNumber());
+        bankAccount.setBalance(accountDTO.getBalance());
+        Long userId = accountDTO.getUserId();
+        Optional<User> user = userRepository.findById(userId);
+        User userFound = user.orElseThrow(() -> new UserNotFoundException(userId));
+        bankAccount.setUser(userFound);
+        return bankAccount;
     }
 }
