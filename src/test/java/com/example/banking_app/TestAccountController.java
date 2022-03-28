@@ -1,6 +1,7 @@
 package com.example.banking_app;
 
 import com.example.banking_app.dto.BankAccountDTO;
+import com.example.banking_app.dto.Deposit;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.math.BigDecimal;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -75,5 +75,19 @@ public class TestAccountController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Test
+    public void depositToAccountAPI() throws Exception
+    {
+
+        Deposit deposit = new Deposit(new BigDecimal("123"));
+        String depositJson = asJsonString(deposit);
+        mvc.perform(
+                put("/api/v1/account/{id}/deposit",3)
+                        .content(depositJson)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }
