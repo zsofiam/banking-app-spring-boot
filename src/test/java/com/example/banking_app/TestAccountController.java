@@ -81,13 +81,17 @@ public class TestAccountController {
     public void depositToAccountAPI() throws Exception
     {
 
-        Deposit deposit = new Deposit(new BigDecimal("123"));
+        Deposit deposit = new Deposit(new BigDecimal("123000"));
         String depositJson = asJsonString(deposit);
         mvc.perform(
                 put("/api/v1/account/{id}/deposit",3)
                         .content(depositJson)
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.number").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.balance").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.userId").isNotEmpty());
     }
 }
