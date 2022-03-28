@@ -12,4 +12,8 @@ public class Withdraw {
 
     public Withdraw() {
     }
+
+    public Withdraw(BigDecimal amount) {
+        this.amount = amount;
+    }
 }

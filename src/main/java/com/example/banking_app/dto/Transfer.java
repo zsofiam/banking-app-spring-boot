@@ -14,4 +14,9 @@ public class Transfer {
 
     public Transfer() {
     }
+
+    public Transfer(BigDecimal amount, String destinationAccountNumber) {
+        this.amount = amount;
+        this.destinationAccountNumber = destinationAccountNumber;
+    }
 }
