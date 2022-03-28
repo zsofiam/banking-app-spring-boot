@@ -94,4 +94,22 @@ public class TestAccountController {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.balance").isNotEmpty())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.userId").isNotEmpty());
     }
+
+    @Test
+    public void withdrawFromAccountAPI() throws Exception
+    {
+
+        Deposit deposit = new Deposit(new BigDecimal("123"));
+        String depositJson = asJsonString(deposit);
+        mvc.perform(
+                        put("/api/v1/account/{id}/withdraw",3)
+                                .content(depositJson)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(3))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.number").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.balance").isNotEmpty())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.userId").isNotEmpty());
+    }
 }
