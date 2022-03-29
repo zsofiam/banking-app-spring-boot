@@ -36,6 +36,61 @@ public class AccountService {
                 .collect(Collectors.toList());
     }
 
+    public BankAccount addAccount(BankAccountDTO accountDTO) {
+        BankAccount bankAccount = convertDTOToEntity(accountDTO);
+        return bankAccountRepository.save(bankAccount);
+    }
+
+    public BigDecimal getBalance(Long account_id) {
+        Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
+        return bankAccount.map(BankAccount::getBalance).orElseThrow(()->new AccountNotFoundException(account_id));
+    }
+
+    public BankAccountDTO depositMoney(Long account_id, Deposit deposit) {
+        BankAccount bankAccountFound = getBankAccountById(account_id);
+        bankAccountFound.setBalance(bankAccountFound.getBalance().add(deposit.getAmount()));
+        return convertEntityToDTO(bankAccountRepository.save(bankAccountFound));
+    }
+
+    private BankAccount getBankAccountById(Long account_id) {
+        Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
+        return bankAccount.orElseThrow(() -> new AccountNotFoundException(account_id));
+    }
+
+    public BankAccountDTO withdrawMoney(Long account_id, Withdraw withdraw) {
+        BankAccount bankAccountFound = getBankAccountById(account_id);
+        if ((bankAccountFound.getBalance().subtract(withdraw.getAmount())).compareTo(BigDecimal.ZERO) >= 0) {
+            bankAccountFound.setBalance(bankAccountFound.getBalance().subtract(withdraw.getAmount()));
+            bankAccountRepository.save(bankAccountFound);
+        }
+        else{
+            throw new LowBalanceException();
+        }
+
+        return convertEntityToDTO(bankAccountFound);
+    }
+
+    public BankAccountDTO transferMoney(Long account_id, Transfer transfer) {
+        BankAccount bankAccountFound = getBankAccountById(account_id);
+        Optional<BankAccount> destinationBankAccount = bankAccountRepository.findByNumber(transfer.getDestinationAccountNumber());
+        BankAccount destinationBankAccountFound = destinationBankAccount.orElseThrow(() -> new AccountNotFoundException(account_id));
+        if ((bankAccountFound.getBalance().subtract(transfer.getAmount())).compareTo(BigDecimal.ZERO) >= 0) {
+            bankAccountFound.setBalance(bankAccountFound.getBalance().subtract(transfer.getAmount()));
+            destinationBankAccountFound.setBalance(destinationBankAccountFound.getBalance().add(transfer.getAmount()));
+            bankAccountRepository.save(bankAccountFound);
+            bankAccountRepository.save(destinationBankAccountFound);
+        }
+        else{
+            throw new LowBalanceException();
+        }
+        return convertEntityToDTO(bankAccountFound);
+    }
+
+    public BankAccountDTO getBankAccountDTO(Long account_id) {
+        BankAccount bankAccountFound = getBankAccountById(account_id);
+        return convertEntityToDTO(bankAccountFound);
+    }
+
     private BankAccountDTO convertEntityToDTO(BankAccount bankAccount) {
         BankAccountDTO bankAccountDTO = new BankAccountDTO();
         bankAccountDTO.setId(bankAccount.getId());
@@ -43,11 +98,6 @@ public class AccountService {
         bankAccountDTO.setBalance(bankAccount.getBalance());
         bankAccountDTO.setUserId(bankAccount.getUser().getId());
         return bankAccountDTO;
-    }
-
-    public BankAccount addAccount(BankAccountDTO accountDTO) {
-        BankAccount bankAccount = convertDTOToEntity(accountDTO);
-        return bankAccountRepository.save(bankAccount);
     }
 
     private BankAccount convertDTOToEntity(BankAccountDTO accountDTO) {
@@ -62,52 +112,7 @@ public class AccountService {
         return bankAccount;
     }
 
-    public BigDecimal getBalance(Long account_id) {
-        Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
-        return bankAccount.map(BankAccount::getBalance).orElseThrow(()->new AccountNotFoundException(account_id));
-    }
-
-    public void depositMoney(Long account_id, Deposit deposit) {
-        BankAccount bankAccountFound = getBankAccountById(account_id);
-        bankAccountFound.setBalance(bankAccountFound.getBalance().add(deposit.getAmount()));
-        bankAccountRepository.save(bankAccountFound);
-    }
-
-    private BankAccount getBankAccountById(Long account_id) {
-        Optional<BankAccount> bankAccount = bankAccountRepository.findById(account_id);
-        BankAccount bankAccountFound = bankAccount.orElseThrow(() -> new AccountNotFoundException(account_id));
-        return bankAccountFound;
-    }
-
-    public void withdrawMoney(Long account_id, Withdraw withdraw) {
-        BankAccount bankAccountFound = getBankAccountById(account_id);
-        if ((bankAccountFound.getBalance().subtract(withdraw.getAmount())).compareTo(BigDecimal.ZERO) >= 0) {
-            bankAccountFound.setBalance(bankAccountFound.getBalance().subtract(withdraw.getAmount()));
-            bankAccountRepository.save(bankAccountFound);
-        }
-        else{
-            throw new LowBalanceException();
-        }
-
-    }
-
-    public void transferMoney(Long account_id, Transfer transfer) {
-        BankAccount bankAccountFound = getBankAccountById(account_id);
-        Optional<BankAccount> destinationBankAccount = bankAccountRepository.findByNumber(transfer.getDestinationAccountNumber());
-        BankAccount destinationBankAccountFound = destinationBankAccount.orElseThrow(() -> new AccountNotFoundException(account_id));
-        if ((bankAccountFound.getBalance().subtract(transfer.getAmount())).compareTo(BigDecimal.ZERO) >= 0) {
-            bankAccountFound.setBalance(bankAccountFound.getBalance().subtract(transfer.getAmount()));
-            destinationBankAccountFound.setBalance(destinationBankAccountFound.getBalance().add(transfer.getAmount()));
-            bankAccountRepository.save(bankAccountFound);
-            bankAccountRepository.save(destinationBankAccountFound);
-        }
-        else{
-            throw new LowBalanceException();
-        }
-    }
-
-    public BankAccountDTO getBankAccountDTO(Long account_id) {
-        BankAccount bankAccountFound = getBankAccountById(account_id);
-        return convertEntityToDTO(bankAccountFound);
+    public void removeAccount(Long account_id) {
+        bankAccountRepository.deleteById(account_id);
     }
 }

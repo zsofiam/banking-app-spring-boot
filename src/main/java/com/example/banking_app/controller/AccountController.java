@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -35,10 +34,15 @@ public class AccountController {
     }
 
     @PostMapping("")
-    public ResponseEntity<Object> addAccount(@RequestBody BankAccountDTO accountDTO) {
+    public ResponseEntity<BankAccountDTO> addAccount(@RequestBody BankAccountDTO accountDTO) {
         BankAccount bankAccount = accountService.addAccount(accountDTO);
         Long id = bankAccount.getId();
-        return ResponseEntity.created(URI.create("/api/v1/account/" + id)).build();
+        String number = bankAccount.getNumber();
+        BigDecimal balance = bankAccount.getBalance();
+        Long userId = bankAccount.getUser().getId();
+        BankAccountDTO bankAccountDTO = new BankAccountDTO(id, number, balance, userId);
+//        return ResponseEntity.created(URI.create("/api/v1/account/" + id)).build();
+        return new ResponseEntity<>(bankAccountDTO, HttpStatus.CREATED);
     }
 
     @GetMapping("/{account_id}/balance")
@@ -47,21 +51,30 @@ public class AccountController {
     }
 
     @PutMapping("/{account_id}/deposit")
-    public ResponseEntity<Object> depositMoney(@PathVariable("account_id") Long account_id, @RequestBody Deposit deposit) {
-        accountService.depositMoney(account_id, deposit);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<BankAccountDTO> depositMoney(@PathVariable("account_id") Long account_id, @RequestBody Deposit deposit) {
+        BankAccountDTO bankAccountDTO = accountService.depositMoney(account_id, deposit);
+        return new ResponseEntity<>(bankAccountDTO, HttpStatus.OK);
     }
 
     @PutMapping("/{account_id}/withdraw")
-    public ResponseEntity<Object> withdrawMoney(@PathVariable("account_id") Long account_id, @RequestBody Withdraw withdraw) {
-        accountService.withdrawMoney(account_id, withdraw);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<BankAccountDTO> withdrawMoney(@PathVariable("account_id") Long account_id, @RequestBody Withdraw withdraw) {
+        BankAccountDTO bankAccountDTO = accountService.withdrawMoney(account_id, withdraw);
+        return new ResponseEntity<>(bankAccountDTO, HttpStatus.OK);
     }
 
     @PutMapping("/{account_id}/transfer")
-    public ResponseEntity<Object> transferMoney(@PathVariable("account_id") Long account_id, @RequestBody Transfer transfer) {
-        accountService.transferMoney(account_id, transfer);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<BankAccountDTO> transferMoney(@PathVariable("account_id") Long account_id, @RequestBody Transfer transfer) {
+        BankAccountDTO bankAccountDTO = accountService.transferMoney(account_id, transfer);
+        return new ResponseEntity<>(bankAccountDTO, HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "/{account_id}")
+    public ResponseEntity<HttpStatus> removeAccount (@PathVariable("account_id") Long account_id)
+    {
+        accountService.removeAccount(account_id);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+
 
 }

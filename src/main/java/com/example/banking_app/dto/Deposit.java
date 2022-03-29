@@ -12,4 +12,8 @@ public class Deposit {
 
     public Deposit() {
     }
+
+    public Deposit(BigDecimal amount) {
+        this.amount = amount;
+    }
 }

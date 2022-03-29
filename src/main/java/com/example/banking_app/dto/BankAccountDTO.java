@@ -16,4 +16,17 @@ public class BankAccountDTO {
 
     public BankAccountDTO() {
     }
+
+    public BankAccountDTO(String s, BigDecimal bigDecimal, Long aLong) {
+        this.number = s;
+        this.balance = bigDecimal;
+        this.userId = aLong;
+    }
+
+    public BankAccountDTO(Long id, String number, BigDecimal balance, Long userId) {
+        this.id = id;
+        this.number = number;
+        this.balance = balance;
+        this.userId = userId;
+    }
 }
