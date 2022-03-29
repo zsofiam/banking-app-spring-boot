@@ -13,8 +13,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.math.BigDecimal;
+
+import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -22,12 +25,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TestAccountController {
 
     @Autowired
-    private MockMvc mvc;
+    private MockMvc mockMvc;
 
     @Test
     public void getAllAccountsAPI() throws Exception
     {
-        mvc.perform(
+        mockMvc.perform(
                         get("/api/v1/account")
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -46,7 +49,7 @@ public class TestAccountController {
     @Test
     public void getAccountByIdAPI() throws Exception
     {
-        mvc.perform(
+        mockMvc.perform(
                         get("/api/v1/account/{id}", 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
@@ -55,11 +58,22 @@ public class TestAccountController {
     }
 
     @Test
+    public void accountByIDBalanceShouldReturnExpectedValue() throws Exception {
+        this.mockMvc
+                .perform(get("/api/v1/account/1/balance"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(containsString("100000")))
+        ;
+    }
+
+    @Test
     public void createAccountAPI() throws Exception
     {
         BankAccountDTO bankAccountDTO = new BankAccountDTO("test1234", new BigDecimal("100000"), 3L);
         String bankAccountDTOJson = asJsonString(bankAccountDTO);
-        mvc.perform(
+        mockMvc.perform(
                         post("/api/v1/account")
                         .content(bankAccountDTOJson)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -75,7 +89,7 @@ public class TestAccountController {
 
         Deposit deposit = new Deposit(new BigDecimal("124"));
         String depositJson = asJsonString(deposit);
-        mvc.perform(
+        mockMvc.perform(
                 put("/api/v1/account/{id}/deposit",9)
                         .content(depositJson)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -93,7 +107,7 @@ public class TestAccountController {
 
         Withdraw withdraw = new Withdraw(new BigDecimal("1"));
         String depositJson = asJsonString(withdraw);
-        mvc.perform(
+        mockMvc.perform(
                         put("/api/v1/account/{id}/withdraw",8)
                                 .content(depositJson)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -111,7 +125,7 @@ public class TestAccountController {
 
         Transfer transfer = new Transfer(new BigDecimal("20"), "20000001");
         String depositJson = asJsonString(transfer);
-        mvc.perform(
+        mockMvc.perform(
                         put("/api/v1/account/{id}/transfer", 3)
                                 .content(depositJson)
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -126,7 +140,7 @@ public class TestAccountController {
     @Test
     public void deleteAccountAPI() throws Exception
     {
-        mvc.perform(
+        mockMvc.perform(
                         delete("/api/v1/account/{id}", 1) )
                 .andExpect(status().isAccepted());
     }
