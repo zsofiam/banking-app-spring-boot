@@ -6,6 +6,7 @@ const Account = (props) => {
 
     const{id, number, balance} = props.account;
     return (
+
         <div className="card">
             <div className="properties-container">
                 <p className="account-link">
@@ -15,6 +16,7 @@ const Account = (props) => {
 
                     </Link>
                 </p>
+                <p>balance: {balance}</p>
             </div>
 
         </div>

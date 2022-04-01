@@ -23,9 +23,7 @@ function App() {
           <main style={{ padding: "1rem" }}>
               <h2>Accounts</h2>
               <AccountList accounts={accounts}/>
-
           </main>
-
           <Footer />
       </div>
 
