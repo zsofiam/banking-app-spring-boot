@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import axios from "axios";
 import Header from "./header";
 import Footer from "./footer";
+import AccountList from "./accountList";
 
 function App() {
 
@@ -21,34 +22,12 @@ function App() {
           <Header />
           <main style={{ padding: "1rem" }}>
               <h2>Accounts</h2>
-              <div>
-                  {accounts.map((account) => (
-                      <div key={account.id}>
-                          {account.number}, balance: {account.balance}
-                      </div>
-                  ))}
-              </div>
+              <AccountList accounts={accounts}/>
+
           </main>
 
           <Footer />
       </div>
-
-    /*<div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-          <h4>Accounts</h4>
-          <div>
-              {accounts.map((account) => (
-                  <div key={account.id}>
-                      {account.number}, balance: {account.balance}
-                  </div>
-              ))}
-          </div>
-      </header>
-
-
-
-    </div>*/
 
   );
 
