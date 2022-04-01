@@ -8,6 +8,7 @@ import {
     BrowserRouter,
     Routes,
     Route,
+    Navigate
 } from "react-router-dom";
 import About from "./about";
 import Contacts from "./contacts";
@@ -17,7 +18,9 @@ ReactDOM.render(
     <BrowserRouter>
         <React.StrictMode>
             <Routes>
-                <Route path="/" exact element={<App />} />
+                {/*<Route path="/" exact element={<App />} />*/}
+                <Route path="/" element={<Navigate replace to="/accounts" />} />
+                <Route path="/accounts" element={<App />} />
                 <Route path="about" element={<About />} />
                 <Route path="contacts" element={<Contacts />} />
                 <Route path="layout" element={<Layout />} />

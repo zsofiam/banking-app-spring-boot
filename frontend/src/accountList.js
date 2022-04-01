@@ -6,22 +6,13 @@ const AccountList = (props) => {
 
         <div>
             {props.accounts.map((account) => (
-                <div key={account.id}>
-                    {account.number}, balance: {account.balance}
-                </div>
-            ))}
-        </div>
-
-
-       /* <div>
-            {props.accounts.map((account) => (
                 <Account
                     key={account.id}
                     id={account.id}
                     account={account}
                 />
             ))}
-        </div>*/
+        </div>
     );
 };
 
