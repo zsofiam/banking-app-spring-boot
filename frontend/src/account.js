@@ -7,18 +7,14 @@ const Account = (props) => {
     const{id, number, balance} = props.account;
     return (
 
-        <div className="card">
-            <div className="properties-container">
-                <p className="account-link">
-                    <Link to={`/accounts/${id}`}>
+        <div className="card mb-2">
+            <div className="card-body">
+                <h4 className="card-title">{number}</h4>
+                <p className="card-text">balance: {balance}</p>
+                <Link to={`/accounts/${id}`} className="card-link">{number}</Link>
+                <Link to={`/accounts/${id}`} className="card-link">Start transaction</Link>
 
-                        {number}
-
-                    </Link>
-                </p>
-                <p>balance: {balance}</p>
             </div>
-
         </div>
     )
 }

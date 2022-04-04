@@ -13,6 +13,7 @@ import {
 import About from "./about";
 import Contacts from "./contacts";
 import Layout from "./layout";
+import AccountDetail from "./accountDetail";
 
 ReactDOM.render(
     <BrowserRouter>
@@ -21,6 +22,7 @@ ReactDOM.render(
                 {/*<Route path="/" exact element={<App />} />*/}
                 <Route path="/" element={<Navigate replace to="/accounts" />} />
                 <Route path="/accounts" element={<App />} />
+                <Route path="/accounts/:accountId" component={AccountDetail} />
                 <Route path="about" element={<About />} />
                 <Route path="contacts" element={<Contacts />} />
                 <Route path="layout" element={<Layout />} />

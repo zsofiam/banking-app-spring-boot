@@ -18,14 +18,33 @@ function App() {
   }, []);
 
   return (
-      <div>
+
+      <div className="container-fluid mt-3">
+          <Header />
+
+          <h2>Accounts</h2>
+          {/*<div className="card">
+              <div className="card-body">
+                  <h4 className="card-title">Card title</h4>
+                  <p className="card-text">Some example text. Some example text.</p>
+                  <a href="#" className="card-link">Card link</a>
+                  <a href="#" className="card-link">Another link</a>
+              </div>
+          </div>*/}
+          <AccountList accounts={accounts}/>
+          <Footer />
+      </div>
+
+      /*<div>
           <Header />
           <main style={{ padding: "1rem" }}>
               <h2>Accounts</h2>
+              <div className="wrapper">
               <AccountList accounts={accounts}/>
+              </div>
           </main>
           <Footer />
-      </div>
+      </div>*/
 
   );
 
