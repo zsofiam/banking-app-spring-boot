@@ -26,18 +26,6 @@ function App() {
           <AccountList accounts={accounts}/>
           <Footer />
       </div>
-
-      /*<div>
-          <Header />
-          <main style={{ padding: "1rem" }}>
-              <h2>Accounts</h2>
-              <div className="wrapper">
-              <AccountList accounts={accounts}/>
-              </div>
-          </main>
-          <Footer />
-      </div>*/
-
   );
 
 }
