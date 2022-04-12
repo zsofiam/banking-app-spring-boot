@@ -3,7 +3,6 @@ import React from "react";
 const Form = (props) => {
     const closeForm = function (e) {
         e.preventDefault();
-        console.log('Clicked.');
         props.toggleComponent();
     };
     return (
