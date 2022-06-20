@@ -14,8 +14,10 @@ import About from "./about";
 import Contacts from "./contacts";
 import Layout from "./layout";
 import AccountDetail from "./accountDetail";
+import {AccountsProvider} from "./AccountsContext";
 
 ReactDOM.render(
+    <AccountsProvider>
     <BrowserRouter>
         <React.StrictMode>
             <Routes>
@@ -28,7 +30,8 @@ ReactDOM.render(
                 <Route path="layout" element={<Layout />} />
             </Routes>
         </React.StrictMode>
-    </BrowserRouter>,
+    </BrowserRouter>
+        </AccountsProvider>,
   document.getElementById('root')
 );
 

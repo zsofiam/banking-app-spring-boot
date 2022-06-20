@@ -1,29 +1,30 @@
-import React from "react";
+import React, {useContext} from "react";
 import {useState} from "react";
 import axios from "axios";
+import {AccountsContext} from "./AccountsContext";
+import {AccountsListContext} from "./App";
 
 const Form = (props) => {
 
-
+    const {accountsContext, getLatestAccounts, setAccountsContext} = useContext(AccountsContext);
+    // const setAccounts = useContext(AccountsListContext);
     const [amount, setAmount] = useState(0);
     const [destination, setDestination] = useState('');
 
     function transferMoney() {
         console.log('amount: ' + amount);
         console.log('destination: ' + destination);
-        const transfer = {"amount": amount, "destinationAccountNumber" : destination};
-        axios
+        const transfer = {"amount": amount, "destinationAccountNumber": destination};
+        return axios
             .put(`/account/${props.id}/transfer`,
-        transfer
-        )
-            .then((response) => {
-                console.log(response.data);
-            });
+                transfer
+            );
     }
+
 
     const closeForm = function (e) {
         e.preventDefault();
-        transferMoney()
+        transferMoney().then(getLatestAccounts);
         props.toggleComponent();
     };
 
@@ -43,7 +44,7 @@ const Form = (props) => {
                        value={amount}
                        onChange={event => setAmount(parseFloat(event.target.value))}
                        type="number"/>
-                <input type="submit" onClick={closeForm} value={'Send'}/>
+                <input type="submit" value={'Send'}/>
                 <br/>
                 <label htmlFor="destination-number">Destination Account: </label>
                 <input id="destination-number"
@@ -59,4 +60,4 @@ const Form = (props) => {
     );
 };
 
-export { Form };
+export {Form};
